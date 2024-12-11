@@ -9,7 +9,6 @@ export function Car(props) {
 	const { nodes, materials, animations } = useGLTF(car);
 
 	const { actions } = useAnimations(animations, group);
-	console.log(actions);
 	useEffect(() => {
 		actions["Animation"].reset().fadeIn(.5).play();
 	});

@@ -3,7 +3,14 @@
 	padding: 0;
 	box-sizing: border-box;
 }
+body {
+	position: relative;
+	height: 430vh;
+}
 #canvas-container {
+	position: fixed;
+	top: 0;
+	left: 0;
 	width: 100vw;
 	height: 100vh;
 }
