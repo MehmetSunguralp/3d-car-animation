@@ -1,4 +1,4 @@
-import React, { act, useEffect, useLayoutEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import car from "./assets/car4.glb";
 import gsap from "gsap";
@@ -9,9 +9,39 @@ export function Car(props) {
 	const { nodes, materials, animations } = useGLTF(car);
 
 	const { actions } = useAnimations(animations, group);
+	const animationAction = actions["Animation"]; // Assuming "Animation" is the correct name
+
 	useEffect(() => {
-		actions["Animation"].reset().fadeIn(.5).play();
-	});
+		if (animationAction) {
+			// Reset the animation when component mounts
+			animationAction.reset().fadeIn(0.5).play();
+
+			// Add scroll event listener
+			const onScroll = () => {
+				const scrollPosition = window.scrollY; // Get the current scroll position
+				const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+				const scrollPercentage = scrollPosition / maxScroll;
+
+				// Map the scroll percentage to the animation progress
+				const animationDuration = animationAction.getClip().duration; // Get the animation duration in seconds
+				const progress = scrollPercentage * animationDuration;
+
+				// Set the animation time based on scroll
+				gsap.to(animationAction, {
+					time: progress, // Set the time directly using GSAP
+					ease: "power2.out",
+				});
+			};
+
+			// Attach scroll event listener
+			window.addEventListener("scroll", onScroll);
+
+			// Cleanup event listener on unmount
+			return () => {
+				window.removeEventListener("scroll", onScroll);
+			};
+		}
+	}, [animationAction]);
 	return (
 		<group ref={group} dispose={null}>
 			<group name="Sketchfab_Scene">
