@@ -11,7 +11,7 @@ export function Car(props) {
 	const { actions } = useAnimations(animations, group);
 	console.log(actions);
 	useEffect(() => {
-		actions["Animation"].reset().fadeIn(0.5).play();
+		actions["Animation"].reset().fadeIn(.5).play();
 	});
 	return (
 		<group ref={group} dispose={null}>
