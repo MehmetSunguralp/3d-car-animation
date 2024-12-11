@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import car from "./assets/car4.glb";
 import gsap from "gsap";
@@ -7,17 +7,22 @@ export function Car(props) {
 	const group = useRef();
 	const tl = useRef();
 	const { nodes, materials, animations } = useGLTF(car);
-
 	const { actions } = useAnimations(animations, group);
 	const animationAction = actions["Animation"]; // Assuming "Animation" is the correct name
+	const [scrolling, setScrolling] = useState(false);
+	let scrollTimeout;
 
 	useEffect(() => {
 		if (animationAction) {
 			// Reset the animation when component mounts
 			animationAction.reset().fadeIn(0.5).play();
 
-			// Add scroll event listener
 			const onScroll = () => {
+				setScrolling(true); // Animation is active while scrolling
+
+				// Clear the previous timeout to reset the idle check
+				clearTimeout(scrollTimeout);
+
 				const scrollPosition = window.scrollY; // Get the current scroll position
 				const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 				const scrollPercentage = scrollPosition / maxScroll;
@@ -31,6 +36,11 @@ export function Car(props) {
 					time: progress, // Set the time directly using GSAP
 					ease: "power2.out",
 				});
+
+				// Stop the animation after 100ms of inactivity (no scrolling)
+				scrollTimeout = setTimeout(() => {
+					setScrolling(false); // Stop animation when scrolling stops
+				}, 100); // 100ms of inactivity before stopping
 			};
 
 			// Attach scroll event listener
@@ -38,6 +48,7 @@ export function Car(props) {
 
 			// Cleanup event listener on unmount
 			return () => {
+				clearTimeout(scrollTimeout);
 				window.removeEventListener("scroll", onScroll);
 			};
 		}
