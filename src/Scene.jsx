@@ -22,7 +22,7 @@ export function Scene() {
 			const radius = 10; // Distance from the car
 			const x = Math.sin(scrollValue) * radius;
 			const z = Math.cos(scrollValue) * radius;
-			cameraRef.current.position.set(x, 5, z); // Maintain height
+			cameraRef.current.position.set(x, 4, z); // Maintain height
 			cameraRef.current.lookAt(0, 0.3, 0); // Focus on the car
 		}
 	});

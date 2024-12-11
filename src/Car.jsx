@@ -8,45 +8,44 @@ export function Car(props) {
 	const tl = useRef();
 	const { nodes, materials, animations } = useGLTF(car);
 	const { actions } = useAnimations(animations, group);
-	const animationAction = actions["Animation"]; // Assuming "Animation" is the correct name
+	const animationAction = actions["Animation"]; 
 	const [scrolling, setScrolling] = useState(false);
 	let scrollTimeout;
 
 	useEffect(() => {
 		if (animationAction) {
-			// Reset the animation when component mounts
 			animationAction.reset().fadeIn(0.5).play();
 
 			const onScroll = () => {
-				setScrolling(true); // Animation is active while scrolling
+				setScrolling(true); 
 
-				// Clear the previous timeout to reset the idle check
+			
 				clearTimeout(scrollTimeout);
 
-				const scrollPosition = window.scrollY; // Get the current scroll position
+				const scrollPosition = window.scrollY; 
 				const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 				const scrollPercentage = scrollPosition / maxScroll;
 
-				// Map the scroll percentage to the animation progress
-				const animationDuration = animationAction.getClip().duration; // Get the animation duration in seconds
+		
+				const animationDuration = animationAction.getClip().duration; 
 				const progress = scrollPercentage * animationDuration;
 
-				// Set the animation time based on scroll
+			
 				gsap.to(animationAction, {
-					time: progress, // Set the time directly using GSAP
+					time: progress,
 					ease: "power2.out",
 				});
 
-				// Stop the animation after 100ms of inactivity (no scrolling)
+			
 				scrollTimeout = setTimeout(() => {
-					setScrolling(false); // Stop animation when scrolling stops
-				}, 100); // 100ms of inactivity before stopping
+					setScrolling(false); 
+				}, 100); 
 			};
 
-			// Attach scroll event listener
+		
 			window.addEventListener("scroll", onScroll);
 
-			// Cleanup event listener on unmount
+		
 			return () => {
 				clearTimeout(scrollTimeout);
 				window.removeEventListener("scroll", onScroll);
