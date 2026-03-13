@@ -5,4 +5,5 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
 	plugins: [react()],
 	assetsInclude: ["**/*.hdr", "**/*.glb", "**/*.gltf"], // Add this line
+	base: "/3d-car-animation/",
 });
